@@ -38,13 +38,21 @@ class DrawableObject : public Transform {
   void SetVertices(const std::vector<GLfloat>& vertices);
   void SetVertices(const std::vector<GLfloat>& vertices,
                    const std::vector<GLushort>& indices);
+
   void SetVertices(const std::vector<GLfloat>& vertices,
                    const std::vector<GLfloat>& normals);
+
+  void SetVertices(const std::vector<GLfloat>& vertices,
+                   const std::vector<GLfloat>& normals,
+                   const std::vector<GLfloat>& textures);
+
   void SetVertices(const std::vector<GLfloat>& vertices,
                    const std::vector<GLfloat>& normals,
                    const std::vector<GLushort>& indices);
+
   virtual void Render(const glm::mat4& projection_mat,
                       const glm::mat4& view_mat) const = 0;
+
 
  protected:
   float red_;
@@ -54,6 +62,7 @@ class DrawableObject : public Transform {
   std::vector<GLushort> indices_;
   std::vector<GLfloat> vertices_;
   std::vector<GLfloat> normals_;
+  std::vector<GLfloat> textures_;
 
   GLenum render_mode_;
   GLuint shader_program_;
@@ -61,6 +70,7 @@ class DrawableObject : public Transform {
   GLuint uniform_mvp_mat_;
   GLuint attrib_vertices_;
   GLuint attrib_normals_;
+  GLuint attrib_textures_;
 };
 }  // namespace tango_gl
 #endif  // TANGO_GL_DRAWABLE_OBJECT_H_

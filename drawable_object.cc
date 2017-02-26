@@ -66,6 +66,14 @@ void DrawableObject::SetVertices(const std::vector<GLfloat>& vertices,
 
 void DrawableObject::SetVertices(const std::vector<GLfloat>& vertices,
                                  const std::vector<GLfloat>& normals,
+                                 const std::vector<GLfloat>& textures) {
+  vertices_ = vertices;
+  normals_ = normals;
+  textures_ = textures;
+}
+
+void DrawableObject::SetVertices(const std::vector<GLfloat>& vertices,
+                                 const std::vector<GLfloat>& normals,
                                  const std::vector<GLushort>& indices) {
   vertices_ = vertices;
   normals_ = normals;

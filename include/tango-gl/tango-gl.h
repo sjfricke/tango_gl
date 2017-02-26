@@ -17,15 +17,14 @@
 #ifndef TANGO_GL_TANGO_GL_H_
 #define TANGO_GL_TANGO_GL_H_
 
+#include <GLES3/gl3ext.h>
+#include <GLES3/gl3platform.h>
+#include <GLES3/gl3.h>
+
 #include <vector>
 #include <unordered_map>
-#include <GLES3/gl3.h>
-#define __gl2_h_                 // what the f*** http://stackoverflow.com/questions/31003863/gles-3-0-including-gl2ext-h
-#include <GLES2/gl2ext.h>
-#include <GLES3/gl3platform.h>
-
-
 #include <tango-gl/texture.h>
+#include <tango-gl/material.h>
 
 #include "glm/glm.hpp"
 
@@ -33,6 +32,7 @@ namespace tango_gl {
 
 class Camera;
 class Transform;
+class Material;
 
 // A simple mesh that does not animate at runtime.
 class StaticMesh {
@@ -63,121 +63,14 @@ class StaticMesh {
   std::vector<glm::vec2> uv;
 };
 
-// Describes how to draw a mesh.
-//
-// It is expected that SetShader and SetParam will be called a bunch
-// of times when one of these is first created and then rarely at
-// runtime.
-class Material {
- public:
-  // Create a new material using the fallback shader.
-  Material();
-
-  // Destroy a material, destroying the underlying shader as well.
-  ~Material();
-
-  Material(const Material&) = delete;
-  void operator=(const Material&) = delete;
-
-  // Set a new shader for this material.  Returns if the shader
-  // properly compiled.
-  bool SetShader(const char* vertex_shader, const char* pixel_shader);
-
-  // Set a float parameter for this material.  Returns if the
-  // parameter was found and set.
-  bool SetParam(const char* uniform_name, float val);
-
-  // Set a vector parameter for this material.  Returns if the
-  // parameter was found and set.
-  bool SetParam(const char* uniform_name, const glm::vec4& vals);
-
-  // Set a texture parameter for this material.
-  bool SetParam(const char* uniform_name, Texture* texture);
-
-  // Bind all parameters for this material to GL state.
-  void BindParams() const;
-
-  // Get the underlying GL shader program for this material.
-  GLuint GetShaderProgram() const { return shader_program_; }
-
-  // Get the shader program's vertex attribute index.
-  GLint GetAttribVertices() const { return attrib_vertices_; }
-
-  // Get the shader program's normal attribute index.
-  GLint GetAttribNormals() const { return attrib_normals_; }
-
-  // Get the shader program's color attribute index.
-  GLint GetAttribColors() const { return attrib_colors_; }
-
-  // Get the UVs coords attribute of the texture
-  GLint GetAttribUVs() const { return attrib_uv_; }
-
-  // Get the shader program's Model-View-Projection matrix uniform index.
-  GLint GetUniformModelViewProjMatrix() const { return uniform_mvp_mat_; }
-
-  // Get the shader program's Model-View matrix uniform index.
-  GLint GetUniformModelViewMatrix() const { return uniform_mv_mat_; }
-
-  // Get the shader program's Model matrix uniform index.
-  GLint GetUniformModelMatrix() const { return uniform_m_mat_; }
-
-  // Get the shader program's Normal matrix uniform index.
-  GLint GetUniformNormalMatrix() const { return uniform_normal_mat_; }
-
- private:
-  // Set the shader for this material to the fallback shader.  This
-  // will never fail.
-  void SetFallbackShader();
-
-  // Set the shader for this material to the specified GL shader
-  // program.  This will fail if required attributes and uniforms can
-  // not be found.
-  bool SetShaderInternal(GLuint program);
-
-  // The fallback shader program.  Never cleaned up.
-  static GLuint fallback_shader_program_;
-
-  // Current shader program.
-  GLuint shader_program_;
-
-  // Current shader program's vertex position attribute index.
-  GLint attrib_vertices_;
-
-  // Current shader program's vertex normal attribute index.
-  GLint attrib_normals_;
-
-  // Current shader program's vertex color attribute index.
-  GLint attrib_colors_;
-
-  // Current shader program's texture coords attribute index.
-  GLint attrib_uv_;
-
-  // Current shader program's Model-View-Projection matrix uniform
-  // index.
-  GLint uniform_mvp_mat_;
-
-  // Current shader program's Model-View matrix uniform index.
-  GLint uniform_mv_mat_;
-
-  // Current shader program's Model matrix uniform index.
-  GLint uniform_m_mat_;
-
-  // Current shader program's Normal matrix uniform index.
-  GLint uniform_normal_mat_;
-
-  // A hash table of float parameters.
-  std::unordered_map<GLint, float> params_float_;
-
-  // A hash table of vec4 parameters.
-  std::unordered_map<GLint, glm::vec4> params_vec4_;
-
-  // A hash table of Texture pointers parameters.
-  std::unordered_map<GLint, Texture*> params_texture_;
-};
 
 // Draw a thing to the screen.
-void Render(const StaticMesh& mesh, const Material& material,
-            const Transform& transform, const Camera& camera);
+//void Render(const StaticMesh& mesh, const Material& material,
+//            const Transform& transform, const Camera& camera);
+
+// Meshes inhierit transforms
+//void Render(const Mesh& mesh, const Material& material,
+//            const glm::mat4& projection_mat, const glm::mat4& view_mat);
 
 }  // namespace tango_gl
 #endif  // TANGO_GL_TANGO_GL_H_

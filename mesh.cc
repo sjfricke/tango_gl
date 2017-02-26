@@ -117,4 +117,88 @@ void Mesh::Render(const glm::mat4& projection_mat,
   }
   glUseProgram(0);
 }
+
+//void Mesh::Render(const glm::mat4& projection_mat, const glm::mat4& view_mat,
+//                  const Material& material, const Texture& texture) const {
+
+  void Mesh::Render(const glm::mat4& projection_mat, const glm::mat4& view_mat,
+                    const Material& material) const {
+  glUseProgram(material.GetShaderProgram());
+  glm::mat4 model_mat = GetTransformationMatrix();
+  glm::mat4 mv_mat = view_mat * model_mat;
+  glm::mat4 mvp_mat = projection_mat * mv_mat;
+
+  // Set up shader uniforms.
+  GLint uniform_mvp_mat = material.GetUniformModelViewProjMatrix();
+  if (uniform_mvp_mat != -1) {
+    glUniformMatrix4fv(uniform_mvp_mat, 1, GL_FALSE, glm::value_ptr(mvp_mat));
+  }
+
+  GLint uniform_mv_mat = material.GetUniformModelViewMatrix();
+  if (uniform_mv_mat != -1) {
+    glUniformMatrix4fv(uniform_mv_mat, 1, GL_FALSE, glm::value_ptr(mv_mat));
+  }
+
+  GLint uniform_m_mat = material.GetUniformModelMatrix();
+  if (uniform_m_mat != -1) {
+    glUniformMatrix4fv(uniform_m_mat, 1, GL_FALSE, glm::value_ptr(model_mat));
+  }
+
+  GLint uniform_normal_mat = material.GetUniformNormalMatrix();
+  if (uniform_normal_mat != -1) {
+    glm::mat4 normal_mat = glm::transpose(glm::inverse(view_mat * model_mat));
+    glUniformMatrix4fv(uniform_normal_mat, 1, GL_FALSE,
+                       glm::value_ptr(normal_mat));
+  }
+
+  //material.BindParams();
+
+
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(texture.GetTextureTarget(),
+//                  texture.GetTextureID());
+//    glUniform1i(0, 0);
+
+
+  if (is_lighting_on_) {
+    glUniformMatrix4fv(uniform_mv_mat_, 1, GL_FALSE, glm::value_ptr(mv_mat));
+
+    glEnableVertexAttribArray(attrib_normals_);
+    glVertexAttribPointer(attrib_normals_, 3, GL_FLOAT, GL_FALSE,
+                          3 * sizeof(GLfloat), &normals_[0]);
+    glm::vec3 light_direction = glm::mat3(view_mat) * light_direction_;
+    glUniform3fv(uniform_light_vec_, 1, glm::value_ptr(light_direction));
+  }
+
+//  if (!textures_.empty()) {
+//    glEnableVertexAttribArray(attrib_textures_);
+//    glVertexAttribPointer(attrib_textures_, 2, GL_FLOAT, GL_FALSE,
+//                          2 * sizeof(GLfloat), &textures_[0]);
+//  }
+
+  glEnableVertexAttribArray(attrib_vertices_);
+
+  if (!indices_.empty()) {
+    glVertexAttribPointer(attrib_vertices_, 3, GL_FLOAT, GL_FALSE,
+                          3 * sizeof(GLfloat), vertices_.data());
+    glDrawElements(render_mode_, indices_.size(), GL_UNSIGNED_SHORT,
+                   indices_.data());
+  } else {
+    glVertexAttribPointer(attrib_vertices_, 3, GL_FLOAT, GL_FALSE,
+                          3 * sizeof(GLfloat), &vertices_[0]);
+    glDrawArrays(render_mode_, 0, vertices_.size() / 3);
+  }
+
+  glDisableVertexAttribArray(attrib_vertices_);
+  if (is_lighting_on_) {
+    glDisableVertexAttribArray(attrib_normals_);
+  }
+//  if (!textures_.empty()) {
+//    glDisableVertexAttribArray(attrib_textures_);
+//  }
+
+  glUseProgram(0);
+
+  util::CheckGlError("Render");
+}
 }  // namespace tango_gl

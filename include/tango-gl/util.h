@@ -20,12 +20,14 @@
 
 #define GL_VERTEX_PROGRAM_POINT_SIZE 0x8642
 
+// what the f*** http://stackoverflow.com/questions/31003863/gles-3-0-including-gl2ext-h
+#include <GLES3/gl3ext.h>
+#include <GLES3/gl3platform.h>
+#include <GLES3/gl3.h>
+
 #include <stdlib.h>
 #include <jni.h>
 #include <android/log.h>
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-
 #include <tango_support_api.h>
 
 #include "glm/glm.hpp"

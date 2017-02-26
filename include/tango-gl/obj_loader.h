@@ -19,8 +19,12 @@
 
 #include <vector>
 
+#include <android/asset_manager.h>
 #include "tango-gl/util.h"
 
+/*
+ * Obj files can not be loaded from asset manager by defaut because they are compressed
+ */
 namespace tango_gl {
 namespace obj_loader {
 //  Load standard .obj file into vertices, indices or normals vectors,
@@ -54,11 +58,14 @@ namespace obj_loader {
 //  tango_gl::obj_loader::LoadOBJData("/sdcard/model.obj", vertices, normals);
 //  mesh->SetVertices(vertices, normals);
 
-bool LoadOBJData(const char* path, std::vector<GLfloat>& vertices,
+bool LoadOBJData(AAssetManager* mgr, const char* path, std::vector<GLfloat>& vertices,
                  std::vector<GLushort>& indices);
 
-bool LoadOBJData(const char* path, std::vector<GLfloat>& vertices,
+bool LoadOBJData(AAssetManager* mgr, const char* path, std::vector<GLfloat>& vertices,
                  std::vector<GLfloat>& normals);
+
+bool LoadOBJData(AAssetManager* mgr, const char* path, std::vector<GLfloat>& vertices,
+                         std::vector<GLfloat>& normals, std::vector<GLfloat>& textures);
 }  // namespace obj_loader
 }  // namespace tango_gl
 #endif  // TANGO_GL_OBJ_LOADER_H_

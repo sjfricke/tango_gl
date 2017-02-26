@@ -17,10 +17,30 @@
 
 namespace tango_gl {
 namespace shaders {
+
+// Fallback vertex shader.  This shader will be used if a valid shader
+// program is not set on a material.
+std::string kFallbackVS() {
+    return  "precision mediump float;\n"
+            "precision mediump int;\n"
+            "attribute vec4 vertex;\n"
+            "uniform mat4 mvp;\n"
+            "void main() {\n"
+            "  gl_Position = mvp * vertex;\n"
+            "}\n";
+}
+
+// Fallback pixel shader.  This shader will be used if a valid shader
+// program is not set on a material.
+std::string kFallbackPS() {
+    return  "precision mediump float;\n"
+            "void main() {\n"
+            "  gl_FragColor = vec4(1, 0, 1, 1);\n"
+            "}\n";
+}
+
 std::string GetBasicVertexShader() {
-  return "#version 300 es\n"
-         "#extension GL_OES_EGL_image_external : require\n"
-         "precision highp float;\n"
+  return "precision highp float;\n"
          "precision mediump int;\n"
          "attribute vec4 vertex;\n"
          "uniform mat4 mvp;\n"
@@ -33,9 +53,7 @@ std::string GetBasicVertexShader() {
 }
 
 std::string GetBasicFragmentShader() {
-  return "#version 300 es\n"
-         "#extension GL_OES_EGL_image_external : require\n"
-         "precision highp float;\n"
+  return "precision highp float;\n"
          "varying vec4 v_color;\n"
          "void main() {\n"
          "  gl_FragColor = v_color;\n"

@@ -17,9 +17,15 @@
 #ifndef TANGO_GL_MESH_H_
 #define TANGO_GL_MESH_H_
 
+// what the f*** http://stackoverflow.com/questions/31003863/gles-3-0-including-gl2ext-h
+#include <GLES3/gl3ext.h>
+#include <GLES3/gl3platform.h>
+#include <GLES3/gl3.h>
+
 #include "tango-gl/bounding_box.h"
 #include "tango-gl/drawable_object.h"
 #include "tango-gl/segment.h"
+#include "material.h"
 
 namespace tango_gl {
 class Mesh : public DrawableObject {
@@ -31,6 +37,10 @@ class Mesh : public DrawableObject {
   void SetBoundingBox();
   void SetLightDirection(const glm::vec3& light_direction);
   void Render(const glm::mat4& projection_mat, const glm::mat4& view_mat) const;
+//  void Render(const glm::mat4& projection_mat, const glm::mat4& view_mat,
+//              const Material& material, const Texture& texture) const;
+void Render(const glm::mat4& projection_mat, const glm::mat4& view_mat,
+            const Material& material) const;
   bool IsIntersecting(const Segment& segment);
 
  protected:

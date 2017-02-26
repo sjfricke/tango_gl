@@ -28,7 +28,7 @@ const GLushort kIndices[] = {0, 1, 2, 2, 1, 3};
 namespace tango_gl {
 
 VideoOverlay::VideoOverlay()
-    : texture_type_(GL_TEXTURE_EXTERNAL_OES),
+    : texture_type_(GL_TEXTURE_2D),
       display_rotation_(TangoSupportRotation::ROTATION_IGNORED),
       u_offset_(0.0f),
       v_offset_(0.0f) {
@@ -44,7 +44,7 @@ VideoOverlay::VideoOverlay(GLuint texture_type)
 }
 
 VideoOverlay::VideoOverlay(TangoSupportRotation display_rotation)
-    : texture_type_(GL_TEXTURE_EXTERNAL_OES),
+    : texture_type_(GL_TEXTURE_2D),
       display_rotation_(display_rotation),
       u_offset_(0.0f),
       v_offset_(0.0f) {
@@ -64,7 +64,7 @@ void VideoOverlay::Initialize() {
   SetDisplayRotation(display_rotation_);
 
   glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-  if (texture_type_ == GL_TEXTURE_EXTERNAL_OES) {
+  if (texture_type_ == GL_TEXTURE_2D) {
     shader_program_ =
         util::CreateProgram(shaders::GetVideoOverlayVertexShader().c_str(),
                             shaders::GetVideoOverlayFragmentShader().c_str());
